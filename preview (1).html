@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Baby Reveal Countdown</title>
+<style>
+body{
+font-family: Arial, sans-serif;
+text-align:center;
+background:#f5f5f5;
+padding-top:15vh;
+}
+
+#countdown{
+font-size:48px;
+font-weight:bold;
+}
+
+#reveal{
+display:none;
+font-size:60px;
+color:#ff4da6;
+margin-top:40px;
+animation: pop 1s ease forwards;
+}
+
+@keyframes pop{
+0%{transform:scale(0.5);opacity:0;}
+100%{transform:scale(1);opacity:1;}
+}
+
+.confetti{
+position:fixed;
+width:10px;
+height:10px;
+background:pink;
+top:-10px;
+animation:fall 4s linear infinite;
+}
+
+@keyframes fall{
+to{transform:translateY(110vh) rotate(360deg);}
+}
+</style>
+</head>
+
+<body>
+
+<h1>Baby Vipond Gender Reveal</h1>
+<div id="countdown"></div>
+<div id="reveal">🎀 It's a GIRL! 🎀</div>
+
+<script>
+
+// Set reveal time
+const revealTime = new Date("2026-03-11T19:00:00-04:00").getTime();
+
+const countdown = document.getElementById("countdown");
+const reveal = document.getElementById("reveal");
+
+function updateCountdown(){
+
+const now = new Date().getTime();
+const distance = revealTime - now;
+
+if(distance <= 0){
+countdown.style.display="none";
+reveal.style.display="block";
+startConfetti();
+return;
+}
+
+const hours = Math.floor((distance % (1000*60*60*24))/(1000*60*60));
+const minutes = Math.floor((distance % (1000*60*60))/(1000*60));
+const seconds = Math.floor((distance % (1000*60))/1000);
+
+countdown.innerHTML =
+hours + "h " + minutes + "m " + seconds + "s";
+}
+
+setInterval(updateCountdown,1000);
+
+function startConfetti(){
+for(let i=0;i<120;i++){
+let c=document.createElement("div");
+c.className="confetti";
+c.style.left=Math.random()*100+"vw";
+c.style.animationDuration=(Math.random()*3+2)+"s";
+document.body.appendChild(c);
+}
+}
+
+updateCountdown();
+</script>
+
+</body>
+</html>
