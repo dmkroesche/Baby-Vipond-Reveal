@@ -1,97 +1,241 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Baby Reveal Countdown</title>
+<title>Baby Vipond Reveal</title>
+
 <style>
+
 body{
-font-family: Arial, sans-serif;
+margin:0;
+font-family:'Segoe UI',sans-serif;
 text-align:center;
-background:#f5f5f5;
-padding-top:15vh;
+color:white;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+background:linear-gradient(-45deg,#ff9ad5,#ffd6ec,#ffc2e5,#ffb3dd);
+background-size:400% 400%;
+animation:gradient 15s ease infinite;
+overflow:hidden;
+}
+
+@keyframes gradient{
+0%{background-position:0% 50%}
+50%{background-position:100% 50%}
+100%{background-position:0% 50%}
+}
+
+h1{
+font-size:46px;
+margin-bottom:10px;
 }
 
 #countdown{
-font-size:48px;
+font-size:64px;
 font-weight:bold;
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{transform:scale(1)}
+50%{transform:scale(1.05)}
+100%{transform:scale(1)}
+}
+
+#suspense{
+font-size:40px;
+margin-top:40px;
+opacity:0;
+transition:opacity 2s;
 }
 
 #reveal{
 display:none;
-font-size:60px;
-color:#ff4da6;
-margin-top:40px;
-animation: pop 1s ease forwards;
+font-size:95px;
+font-weight:bold;
+margin-top:30px;
+text-shadow:0 0 20px rgba(255,255,255,0.8);
 }
 
-@keyframes pop{
-0%{transform:scale(0.5);opacity:0;}
-100%{transform:scale(1);opacity:1;}
+/* HEARTS */
+
+.heart{
+position:absolute;
+color:#ff6fb5;
+font-size:30px;
+bottom:-50px;
+animation:floatHeart linear forwards;
 }
+
+@keyframes floatHeart{
+from{transform:translateY(0)}
+to{transform:translateY(-120vh)}
+}
+
+/* BALLOONS */
+
+.balloon{
+position:absolute;
+bottom:-150px;
+width:60px;
+height:80px;
+border-radius:50% 50% 45% 45%;
+animation:floatUp linear forwards;
+}
+
+.balloon:after{
+content:"";
+position:absolute;
+width:2px;
+height:70px;
+background:#fff;
+left:50%;
+top:80px;
+}
+
+@keyframes floatUp{
+from{transform:translateY(0)}
+to{transform:translateY(-120vh)}
+}
+
+/* CONFETTI */
 
 .confetti{
 position:fixed;
 width:10px;
 height:10px;
-background:pink;
 top:-10px;
-animation:fall 4s linear infinite;
+animation:fall linear forwards;
 }
 
 @keyframes fall{
-to{transform:translateY(110vh) rotate(360deg);}
+to{transform:translateY(110vh) rotate(720deg)}
 }
+
 </style>
 </head>
 
 <body>
 
 <h1>Baby Vipond Gender Reveal</h1>
+
 <div id="countdown"></div>
-<div id="reveal">🎀 It's a GIRL! 🎀</div>
+
+<div id="suspense">Baby Vipond is...</div>
+
+<div id="reveal">🎀 A GIRL 🎀</div>
+
+<audio id="drumroll">
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_7c8a2f77d2.mp3" type="audio/mpeg">
+</audio>
 
 <script>
 
-// Set reveal time
 const revealTime = new Date("2026-03-11T19:00:00-04:00").getTime();
 
-const countdown = document.getElementById("countdown");
-const reveal = document.getElementById("reveal");
+const countdown=document.getElementById("countdown");
+const suspense=document.getElementById("suspense");
+const reveal=document.getElementById("reveal");
+const drumroll=document.getElementById("drumroll");
 
 function updateCountdown(){
 
-const now = new Date().getTime();
-const distance = revealTime - now;
+const now=new Date().getTime();
+const distance=revealTime-now;
 
-if(distance <= 0){
+if(distance<=0){
+
 countdown.style.display="none";
+suspense.style.opacity=1;
+
+drumroll.play();
+
+launchHearts();
+
+setTimeout(()=>{
+
 reveal.style.display="block";
-startConfetti();
+launchBalloons();
+launchConfetti();
+
+},3500);
+
 return;
 }
 
-const hours = Math.floor((distance % (1000*60*60*24))/(1000*60*60));
-const minutes = Math.floor((distance % (1000*60*60))/(1000*60));
-const seconds = Math.floor((distance % (1000*60))/1000);
+const hours=Math.floor((distance%(1000*60*60*24))/(1000*60*60));
+const minutes=Math.floor((distance%(1000*60*60))/(1000*60));
+const seconds=Math.floor((distance%(1000*60))/1000);
 
-countdown.innerHTML =
-hours + "h " + minutes + "m " + seconds + "s";
+countdown.innerHTML=hours+"h "+minutes+"m "+seconds+"s";
+
 }
 
 setInterval(updateCountdown,1000);
 
-function startConfetti(){
-for(let i=0;i<120;i++){
-let c=document.createElement("div");
-c.className="confetti";
-c.style.left=Math.random()*100+"vw";
-c.style.animationDuration=(Math.random()*3+2)+"s";
-document.body.appendChild(c);
-}
+updateCountdown();
+
+function launchHearts(){
+
+for(let i=0;i<40;i++){
+
+let heart=document.createElement("div");
+heart.className="heart";
+heart.innerHTML="❤";
+
+heart.style.left=Math.random()*100+"vw";
+heart.style.animationDuration=(Math.random()*5+4)+"s";
+
+document.body.appendChild(heart);
+
 }
 
-updateCountdown();
+}
+
+function launchBalloons(){
+
+const colors=["#ff6fb5","#ff9ad5","#ffc2e5","#ffd6ec"];
+
+for(let i=0;i<30;i++){
+
+let balloon=document.createElement("div");
+balloon.className="balloon";
+
+balloon.style.left=Math.random()*100+"vw";
+balloon.style.animationDuration=(Math.random()*6+6)+"s";
+balloon.style.background=colors[Math.floor(Math.random()*colors.length)];
+
+document.body.appendChild(balloon);
+
+}
+
+}
+
+function launchConfetti(){
+
+const colors=["#ff4da6","#ff80c1","#ffd1ec","#ffffff"];
+
+for(let i=0;i<200;i++){
+
+let confetti=document.createElement("div");
+confetti.className="confetti";
+
+confetti.style.left=Math.random()*100+"vw";
+confetti.style.animationDuration=(Math.random()*3+2)+"s";
+confetti.style.background=colors[Math.floor(Math.random()*colors.length)];
+
+document.body.appendChild(confetti);
+
+}
+
+}
+
 </script>
 
 </body>
 </html>
+```
